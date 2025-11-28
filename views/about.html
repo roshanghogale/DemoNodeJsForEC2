@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - EC2 AutoScaling Lab</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">Roshan's AWS Lab</div>
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/guide">Guide</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="card">
+                <h1>About This Project</h1>
+                <p><strong>Created by:</strong> Roshan Ghogale</p>
+                <p>This Node.js application demonstrates EC2 AutoScaling by deploying on AWS infrastructure. I'm following a complete workflow from EC2 launch to AMI creation, Target Groups, and Application Load Balancer setup.</p>
+            </div>
+
+            <div class="card">
+                <h2>Key Components</h2>
+                <div class="features">
+                    <div class="feature-card">
+                        <h3>Launch Templates</h3>
+                        <p>Define instance configuration including AMI, instance type, security groups, and user data</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Auto Scaling Groups</h3>
+                        <p>Logical grouping of instances for scaling and management purposes</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Scaling Policies</h3>
+                        <p>Rules that define when and how to scale your instances up or down</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>My Deployment Architecture</h2>
+                <ul>
+                    <li><strong>EC2 Instance:</strong> Running this Node.js app with proper configuration</li>
+                    <li><strong>Custom AMI:</strong> Captured from configured EC2 instance</li>
+                    <li><strong>Target Group:</strong> Health checks and instance registration</li>
+                    <li><strong>Application Load Balancer:</strong> Traffic distribution and SSL termination</li>
+                    <li><strong>Auto Scaling Group:</strong> Dynamic scaling based on metrics</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

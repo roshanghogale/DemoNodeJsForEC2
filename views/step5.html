@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoScaling Setup - Roshan's AWS Lab</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">Roshan's AWS Lab</div>
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/guide">Guide</a>
+                    <a href="/autoscaling">AutoScaling</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="card">
+                <h1>Step 5: Create AutoScaling Group</h1>
+                <p>Final step - Create AutoScaling Group using the AMI and integrate with ALB:</p>
+                <div class="code-block">
+# Create Launch Template with your AMI
+aws ec2 create-launch-template \
+  --launch-template-name roshan-nodejs-template \
+  --launch-template-data '{
+    "ImageId": "ami-yourCustomAMI",
+    "InstanceType": "t3.micro",
+    "SecurityGroupIds": ["sg-12345678"],
+    "KeyName": "roshan-key"
+  }'
+
+# Create Auto Scaling Group
+aws autoscaling create-auto-scaling-group \
+  --auto-scaling-group-name roshan-nodejs-asg \
+  --launch-template LaunchTemplateName=roshan-nodejs-template,Version=1 \
+  --min-size 1 \
+  --max-size 5 \
+  --desired-capacity 2 \
+  --target-group-arns arn:aws:elasticloadbalancing:region:account:targetgroup/roshan-nodejs-tg \
+  --vpc-zone-identifier "subnet-12345,subnet-67890"
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🎉 Deployment Complete!</h2>
+                <p><strong>Roshan Ghogale's</strong> Node.js app is now running with:</p>
+                <ul>
+                    <li>✅ EC2 instances running the app</li>
+                    <li>✅ Custom AMI for consistent deployments</li>
+                    <li>✅ Target Group with health checks</li>
+                    <li>✅ Application Load Balancer</li>
+                    <li>✅ Auto Scaling Group for dynamic scaling</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

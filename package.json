@@ -1,0 +1,13 @@
+{
+  "name": "basic-node-app",
+  "version": "1.0.0",
+  "description": "Basic Node.js app with home, about, and guide pages",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

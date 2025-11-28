@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide - EC2 AutoScaling Lab</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">Roshan's AWS Lab</div>
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/guide">Guide</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="card">
+                <h1>Roshan's EC2 Deployment Guide</h1>
+                <p>My complete workflow for deploying this Node.js app with AutoScaling on AWS.</p>
+            </div>
+
+            <div class="card">
+                <h2>Step 1: Launch EC2 Instance</h2>
+                <p>Deploy this Node.js app on EC2 with proper configuration:</p>
+                <div class="code-block">
+# Launch EC2 instance
+aws ec2 run-instances \
+  --image-id ami-0abcdef1234567890 \
+  --instance-type t3.micro \
+  --key-name roshan-key \
+  --security-group-ids sg-12345678 \
+  --user-data file://install-app.sh
+
+# install-app.sh content:
+#!/bin/bash
+yum update -y
+yum install -y nodejs npm
+cd /home/ec2-user
+git clone <your-repo>
+cd demo
+npm install
+npm start
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Step 2: Create AMI from Instance</h2>
+                <p>Capture the configured EC2 instance as a custom AMI:</p>
+                <div class="code-block">
+# Create AMI from running instance
+aws ec2 create-image \
+  --instance-id i-1234567890abcdef0 \
+  --name "roshan-nodejs-app-ami" \
+  --description "Node.js app configured for AutoScaling" \
+  --no-reboot
+
+# Wait for AMI to be available
+aws ec2 wait image-available --image-ids ami-newlyCreatedAMI
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Step 3: Create Target Group</h2>
+                <p>Set up Target Group for health checks and load balancing:</p>
+                <div class="code-block">
+# Create Target Group
+aws elbv2 create-target-group \
+  --name roshan-nodejs-tg \
+  --protocol HTTP \
+  --port 3000 \
+  --vpc-id vpc-12345678 \
+  --health-check-path / \
+  --health-check-interval-seconds 30 \
+  --healthy-threshold-count 2
+
+# Register initial instance
+aws elbv2 register-targets \
+  --target-group-arn arn:aws:elasticloadbalancing:region:account:targetgroup/roshan-nodejs-tg \
+  --targets Id=i-1234567890abcdef0,Port=3000
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Step 4: Create Application Load Balancer</h2>
+                <p>Set up ALB for traffic distribution:</p>
+                <div class="code-block">
+# Create Application Load Balancer
+aws elbv2 create-load-balancer \
+  --name roshan-nodejs-alb \
+  --subnets subnet-12345 subnet-67890 \
+  --security-groups sg-12345678 \
+  --scheme internet-facing
+
+# Create Listener
+aws elbv2 create-listener \
+  --load-balancer-arn arn:aws:elasticloadbalancing:region:account:loadbalancer/app/roshan-nodejs-alb \
+  --protocol HTTP \
+  --port 80 \
+  --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:region:account:targetgroup/roshan-nodejs-tg
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Best Practices</h2>
+                <ul>
+                    <li>Use multiple Availability Zones for high availability</li>
+                    <li>Set appropriate cooldown periods to prevent rapid scaling</li>
+                    <li>Monitor costs and set up billing alerts</li>
+                    <li>Test scaling policies under different load conditions</li>
+                    <li>Use Application Load Balancer for traffic distribution</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
