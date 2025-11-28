@@ -28,6 +28,16 @@ app.get('/autoscaling', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'step5.html'));
 });
 
+// Health check endpoint for Target Group
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        app: 'Roshan\'s Node.js EC2 Demo'
+    });
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
